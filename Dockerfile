@@ -10,7 +10,7 @@ ENV _CONTAINERS_USERNS_CONFIGURED="" \
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* \
  && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-* \
  && yum update -y \
- && yum install -y podman gettext crun shadow-utils fuse-overlayfs --exclude container-selinux \
+ && yum install -y podman jq gettext crun shadow-utils fuse-overlayfs --exclude container-selinux \
  && rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 
@@ -45,7 +45,6 @@ WORKDIR /usr/local/bin/
 
 RUN curl -LOs ${KUBECTL} \
  && chmod +x kubectl \
- # Install helm
  && curl -LOs ${HELM_BINARY} \
  && tar -zxf ${HELM_BINARY##*/} \
  && mv linux-amd64/helm /usr/local/bin/helm
