@@ -1,16 +1,16 @@
 FROM centos:8
 
 ENV _CONTAINERS_USERNS_CONFIGURED="" \
-    KUBECTL="https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl" \
-    HELM_BINARY="https://get.helm.sh/helm-v3.8.1-linux-amd64.tar.gz" \
-    CONTAINER_CONF="https://raw.githubusercontent.com/containers/libpod/master/contrib/podmanimage/stable/containers.conf" \
-    PODMAN_CONTAINER_CONF="https://raw.githubusercontent.com/containers/libpod/master/contrib/podmanimage/stable/podman-containers.conf"
+  KUBECTL="https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl" \
+  HELM_BINARY="https://get.helm.sh/helm-v3.8.1-linux-amd64.tar.gz" \
+  CONTAINER_CONF="https://raw.githubusercontent.com/containers/libpod/master/contrib/podmanimage/stable/containers.conf" \
+  PODMAN_CONTAINER_CONF="https://raw.githubusercontent.com/containers/libpod/master/contrib/podmanimage/stable/podman-containers.conf"
 
 
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* \
- && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-* \
- && yum update -y \
- && yum install -y podman jq gettext crun shadow-utils fuse-overlayfs --exclude container-selinux \
+ && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+RUN yum update -y \
+ && yum install -y podman git jq gettext crun shadow-utils fuse-overlayfs \
  && rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 
@@ -47,4 +47,6 @@ RUN curl -LOs ${KUBECTL} \
  && chmod +x kubectl \
  && curl -LOs ${HELM_BINARY} \
  && tar -zxf ${HELM_BINARY##*/} \
- && mv linux-amd64/helm /usr/local/bin/helm
+ && mv linux-amd64/helm ./helm \
+ && rm -rf linux-amd64 \
+ && rm -rf ${HELM_BINARY##*/}
