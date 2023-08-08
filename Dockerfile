@@ -32,7 +32,7 @@ RUN chmod 644 /etc/containers/containers.conf \
  && sed -i -e 's|^#mount_program|mount_program|g' \
            -e '/additionalimage.*/a "/var/lib/shared",' \
            -e 's|^mountopt[[:space:]]*=.*$|mountopt = "nodev,fsync=0"|g' /etc/containers/storage.conf \
- && echo $'[[registry]]\nlocation=\"${REGISTRY}\"\ninsecure=true' > /etc/containers/registries.conf.d/registry.conf
+ && if [[ ! -z "$REGISTRY" ]]; then echo -e "[[registry]]\nlocation=\"$REGISTRY\"\ninsecure=true" > /etc/containers/registries.conf.d/registry.conf; fi
 
 
 RUN mkdir -p /var/lib/shared/{overlay-images,overlay-layers,vfs-images,vfs-layers} \
